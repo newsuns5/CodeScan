@@ -1,9 +1,17 @@
+'''
+Simple code for Barcode Decoding Test 
+'''
+
+
 import cv2
 import zxingcpp
 
 
 font = cv2.FONT_HERSHEY_SIMPLEX
-
+path = 'C:/Users/Youngseok_Tak/Desktop/VisionTEST/'
+file_name = '20230814_143327.jpg'
+img = cv2.imread(path+file_name)
+results = zxingcpp.read_barcodes(img)
 # zxing 좌표 컨버팅 as x,y,w,h
 def convert_position(data) :
     
@@ -28,10 +36,7 @@ def convert_position(data) :
     x,y,w,h = int(x),int(y),int(w),int(h)
   
     return x,y,w,h
-path = 'C:/Users/Youngseok_Tak/Desktop/VisionTEST/'
-file_name = '20230731_231310.jpg'
-img = cv2.imread(path+file_name)
-results = zxingcpp.read_barcodes(img)
+
 
 for result in results:
 	x,y,w,h = convert_position(result.position)
@@ -39,9 +44,11 @@ for result in results:
 	cv2.putText(img, result.text, (x , y + 20), font, 1, (0, 0, 255),4)
 	print("Found barcode:\n Text:    '{}'\n Format:   {}\n Position: {}"
 		.format(result.text, result.format, result.position))
-cv2.imshow('result',img)
-cv2.waitKey(0)
-cv2.imwrite(path+file_name+'_result.jpg',img)
+
+if results :
+    cv2.imshow('result',img)
+    cv2.waitKey(0)
+    cv2.imwrite(path+file_name+'_result.jpg',img)
 	
-if len(results) == 0:
+elif len(results) == 0 :
 	print("Could not find any barcode.")
